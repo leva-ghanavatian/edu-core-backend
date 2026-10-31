@@ -9,14 +9,17 @@ const registerUser = async (req, res) => {
     const data = User.parseOnly(req.body, ["name", "username", "email", "password", "phone"]);
     const newUser = await userModel.create(data);
     const token = signToken(newUser);
-    res.status(201).json({user: newUser, token});
+    res.status(201).json({ user: newUser, token });
 };
 
 const loginUser = async (req, res) => {
-    const { email, password } = User.parseOnly(req.body, ["email", "password"]);
-    const user = await userModel.authenticate(email, password);
-    if (!user) throw new UnauthorizedError("Invalid email or password");
-    res.json({ token: signToken(user) });
+    const { email, phone, password } = User.parseLogin(req.body);
+    const user = await userModel.authenticate({ email, phone }, password);
+    if (!user) throw new UnauthorizedError("Invalid email/phone or password");
+    res.json({
+        token: signToken(user),
+        user
+    });
 };
 
 const getMe = async (req, res) => {

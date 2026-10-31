@@ -52,7 +52,13 @@ const DUMMY_HASH = bcrypt.hashSync("timing-equalizer", 12);
 // The hash never leaves this file.
 const authenticate = async (email, password) => {
     const users = await getCollection();
-    const user = await users.findOne({ email }, { collation: CASE_INSENSITIVE });
+    // const query = email ? { email } : { phone };
+    const query = { $or: [] };
+    if (email) query.$or.push({ email });
+    if (phone) query.$or.push({ phone });
+
+    const user = await users.findOne(query, { collation: CASE_INSENSITIVE });
+
     // always run bcrypt, so response time doesn't reveal whether the email exists
     const matches = await bcrypt.compare(password, user?.passwordHash ?? DUMMY_HASH);
     if (!user || !matches) return null;

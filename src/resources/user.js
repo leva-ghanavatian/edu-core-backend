@@ -1,4 +1,6 @@
 const { createResource } = require("../parsing/resource");
+const { createParser } = require("../parsing/compile");
+const { ValidationError } = require("../../helpers/errors");
 
 const PASSWORD_MSG = "Password must be between 8 and 72 characters.";
 
@@ -14,7 +16,7 @@ const text = (label, rules = {}, messages = {}) => ({
   }
 });
 
-module.exports = createResource({
+const userResource = createResource({
   schema: {
     name: text("Name", { max: 100 }),
     username: text("Username",
@@ -43,7 +45,7 @@ module.exports = createResource({
         required: PASSWORD_MSG, string: PASSWORD_MSG,
         stringMin: PASSWORD_MSG, stringMax: PASSWORD_MSG, passwordBytes: PASSWORD_MSG
       }
-    }, 
+    },
     phone: {
       type: "string", trim: true, optional: false, max: 20,
       messages: {
@@ -61,7 +63,7 @@ module.exports = createResource({
       }
     }
   },
-  filterFields: ["name", "username", "email",  "phone", "crime"],
+  filterFields: ["name", "username", "email", "phone", "crime"],
   filterExtras: {
     role: { type: "string", enum: ["USER", "ADMIN"] },
     createdAt: { type: "date" },
@@ -69,3 +71,22 @@ module.exports = createResource({
   },
   sortable: ["name", "username", "crime", "createdAt", "updatedAt"]
 });
+
+const loginSchema = {
+  email: { type: "email", optional: true, normalize: true },
+  phone: { type: "string", optional: true },
+  password: { type: "string" }
+};
+
+const loginParser = createParser(loginSchema);
+
+// Override the parseLogin function
+userResource.parseLogin = (data) => {
+  const parsed = loginParser.parseCreate(data);
+  if (!parsed.email && !parsed.phone) {
+    throw new ValidationError("Please provide either an email or a phone number to login.");
+  }
+  return parsed;
+};
+
+module.exports = userResource;
