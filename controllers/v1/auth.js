@@ -8,7 +8,8 @@ const found = require("../../helpers/found");
 const registerUser = async (req, res) => {
     const data = User.parseOnly(req.body, ["name", "username", "email", "password", "phone"]);
     const newUser = await userModel.create(data);
-    res.status(201).json(newUser);
+    const token = signToken(newUser);
+    res.status(201).json({user: newUser, token});
 };
 
 const loginUser = async (req, res) => {
