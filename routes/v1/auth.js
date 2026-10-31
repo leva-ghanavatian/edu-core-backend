@@ -1,6 +1,6 @@
 const express = require("express");
-const { requireJsonBody } = require("../middlewares/http");
-const { requireAuth } = require("../middlewares/auth");
+const { requireJsonBody } = require("../../middlewares/http");
+const { requireAuth } = require("../../middlewares/auth");
 const auth = require("../controllers/userCont");
 
 const router = express.Router();

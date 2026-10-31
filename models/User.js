@@ -60,7 +60,6 @@ const authenticate = async (email, password) => {
     return safe;
 };
 
-// Expects already-validated input (see validators/user.js).
 const create = async ({ name, username, email, password, phone }) => {
     const users = await getCollection();
     const user = {
