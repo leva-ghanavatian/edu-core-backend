@@ -50,7 +50,7 @@ const DUMMY_HASH = bcrypt.hashSync("timing-equalizer", 12);
 
 // Returns the user (without passwordHash) when the credentials match, else null.
 // The hash never leaves this file.
-const authenticate = async (email, password) => {
+const authenticate = async ({ email, phone }, password) => {
     const users = await getCollection();
     // const query = email ? { email } : { phone };
     const query = { $or: [] };
