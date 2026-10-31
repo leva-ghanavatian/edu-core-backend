@@ -45,7 +45,7 @@ module.exports = createResource({
       }
     }, 
     phone: {
-      type: "string", trim: true, optional: true, max: 20,
+      type: "string", trim: true, optional: false, max: 20,
       messages: {
         string: "Phone must be a string.",
         stringMax: "Phone must be at most {expected} characters."
