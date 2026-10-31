@@ -1,4 +1,4 @@
-const DB = require("../configs/db");
+const DB = require("../configs/database");
 const { ConflictError } = require("../helpers/errors");
 const bcrypt = require("bcrypt");
 
