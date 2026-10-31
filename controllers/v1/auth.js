@@ -6,7 +6,7 @@ const { UnauthorizedError } = require("../../helpers/errors");
 const found = require("../../helpers/found");
 
 const registerUser = async (req, res) => {
-    const data = User.parseOnly(req.body, ["name", "username", "email", "password"]);
+    const data = User.parseOnly(req.body, ["name", "username", "email", "password", "phone"]);
     const newUser = await userModel.create(data);
     res.status(201).json(newUser);
 };
@@ -23,3 +23,9 @@ const getMe = async (req, res) => {
     const user = await userModel.findById(id);
     res.json(found(user, "User"));
 };
+
+module.exports = {
+    registerUser,
+    loginUser,
+    getMe
+}
