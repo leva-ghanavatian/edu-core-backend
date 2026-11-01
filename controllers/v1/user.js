@@ -59,9 +59,9 @@ const updateCrime = async (req, res) => {
 };
 
 const banUser = async (req, res) => {
-        const { phone } = User.parseOnly(req.body, ["phone"]); 
-        const ban = await Banned.create({ phone });
-        res.status(201).json(ban);
+    const { phone } = User.parseOnly(req.body, ["phone"]);
+    const ban = await Banned.create({ phone });
+    res.status(201).json(ban);
 };
 
 const deleteUser = async (req, res) => {
