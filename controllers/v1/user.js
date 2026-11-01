@@ -38,11 +38,11 @@ const updateUser = async (req, res) => {
 }
 
 const updateMyProfile = async (req, res, next) => {
-    try {
-        const data = User.parseUpdate(req.body);
-        const updatedUser = await userModel.update(req.user.sub, data);
-        res.json(found(updatedUser, "User"));
-    } catch (error) { next(error); }
+    const data = User.parseUpdate(req.body);
+    const id = parseId(req.user.sub);
+    const updatedUser = await userModel.update(id, data)
+    res.json(found(updatedUser, "User"));
+
 };
 
 const upgradeUser = async (req, res) => {
