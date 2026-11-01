@@ -87,7 +87,7 @@ const create = async ({ name, username, email, password, phone }) => {
     }
 };
 
-const modify = async (_id, fields) => {
+const update = async (_id, fields) => {
     const users = await getCollection();
     return users.findOneAndUpdate(
         { _id },
@@ -113,9 +113,9 @@ const changePassword = async (_id, oldPassword, newPassword) => {
     );
 };
 
-const setRole = (id, role) => modify(id, { role });
+const setRole = (id, role) => update(id, { role });
 
-const setCrime = (id, crime) => modify(id, { crime });
+const setCrime = (id, crime) => update(id, { crime });
 
 const deleteUser = async (id) => {
     const users = await getCollection();
@@ -127,6 +127,7 @@ module.exports = {
     init,
     find,
     findById,
+    update,
     authenticate,
     create,
     setRole,
