@@ -30,6 +30,13 @@ const getUser = async (req, res) => {
     res.json(found(user, "User"));
 };
 
+const updateUser = async (req, res) => {
+    const id = parseId(req.params.id);
+    const data = User.parseUpdate(req.body);
+    const user = await userModel.update(id, data);
+    res.json(found(user, "User"));
+}
+
 const upgradeUser = async (req, res) => {
     const id = parseId(req.params.id);
     const user = await userModel.setRole(id, userModel.ROLES.ADMIN);
@@ -58,6 +65,7 @@ const deleteUser = async (req, res) => {
 module.exports = {
     getAllUsers,
     getUser,
+    updateUser,
     upgradeUser,
     updateCrime,
     banUser,
