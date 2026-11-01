@@ -6,6 +6,7 @@ const bodyParser = require("body-parser");
 
 const app = require("./app");
 const authRouter = require("./routes/v1/auth");
+const userRouter = require("./routes/v1/user");
 
 const { notFound, errorHandler, camelcase } = require("./middlewares/http");
 const { init } = require("./models/User");
@@ -18,6 +19,7 @@ app.use(express.static(path.join(__dirname, "public", "courses", "covers")));
 
 // --- Routes ---
 app.use("/v1/auth", authRouter);
+app.use("/v1/user", userRouter);
 
 // --- Error Handling  ---
 app.use(notFound);
