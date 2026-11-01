@@ -16,8 +16,7 @@ const categoryResource = createResource({
     schema: {
         title: text("Title", { max: 100 }),
         href: text("Href", { min: 3, max: 30, pattern: /^[a-z0-9-]+$/ },
-            { stringPattern: "Href may only contain lowercase letters, numbers, and dashes." }
-        ),
+            { stringPattern: "Href may only contain lowercase letters, numbers, and dashes." })
     },
     filterFields: ["title", "href"],
     filterExtras: {
