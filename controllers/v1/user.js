@@ -37,6 +37,14 @@ const updateUser = async (req, res) => {
     res.json(found(user, "User"));
 }
 
+const updateMyProfile = async (req, res, next) => {
+    try {
+        const data = User.parseUpdate(req.body);
+        const updatedUser = await userModel.update(req.user.sub, data);
+        res.json(found(updatedUser, "User"));
+    } catch (error) { next(error); }
+};
+
 const upgradeUser = async (req, res) => {
     const id = parseId(req.params.id);
     const user = await userModel.setRole(id, userModel.ROLES.ADMIN);
@@ -66,6 +74,7 @@ module.exports = {
     getAllUsers,
     getUser,
     updateUser,
+    updateMyProfile,
     upgradeUser,
     updateCrime,
     banUser,
