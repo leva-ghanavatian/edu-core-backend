@@ -7,8 +7,10 @@ const router = express.Router();
 
 router.get("/", requireAuth, requireAdmin, userCont.getAllUsers);
 router.get("/:id", requireAuth, requireAdmin, userCont.getUser);
+router.patch("/me", requireAuth, userCont.updateMyProfile);
 router.patch("/:id/upgrade", requireAuth, requireAdmin, userCont.upgradeUser);
-router.patch("/:id", requireAuth, requireAdmin, requireJsonBody, userCont.updateCrime);
+router.patch("/:id/penalty", requireAuth, requireAdmin, requireJsonBody, userCont.updateCrime);
+router.patch("/:id", requireAuth, requireAdmin, requireJsonBody, userCont.updateUser);
 router.post("/ban", requireAuth, requireAdmin, requireJsonBody, userCont.banUser);
 router.delete("/:id", requireAuth, requireAdmin, userCont.deleteUser);
 
