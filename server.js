@@ -7,7 +7,7 @@ const bodyParser = require("body-parser");
 const app = require("./app");
 const authRouter = require("./routes/v1/auth");
 const userRouter = require("./routes/v1/user");
-const categoryRouter = require("./routes/v1/categories");
+const categoryRouter = require("./routes/v1/category");
 
 const { notFound, errorHandler, camelcase } = require("./middlewares/http");
 const { init } = require("./models/User");
@@ -21,7 +21,7 @@ app.use(express.static(path.join(__dirname, "public", "courses", "covers")));
 // --- Routes ---
 app.use("/v1/auth", authRouter);
 app.use("/v1/user", userRouter);
-app.use("/v1/categories", categoryRouter);
+app.use("/v1/category", categoryRouter);
 
 // --- Error Handling  ---
 app.use(notFound);

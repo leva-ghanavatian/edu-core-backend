@@ -1,8 +1,8 @@
-const categoryModel = require("../models/Category");
-const Category = require("../src/resources/category");
-const { parsePagination } = require("../src/parsing/pagination");
-const { parseId } = require("../src/parsing/id");
-const found = require("../helpers/found");
+const categoryModel = require("../../models/Category");
+const Category = require("../../src/resources/category");
+const { parsePagination } = require("../../src/parsing/pagination");
+const { parseId } = require("../../src/parsing/id");
+const found = require("../../helpers/found");
 
 const getAllCategories = async (req, res, next) => {
     const { page, limit, sort, ...filterQuery } = req.query;
