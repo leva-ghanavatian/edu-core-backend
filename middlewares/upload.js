@@ -1,38 +1,35 @@
-const multer = require('multer')
-const path = require('path')
+const path = require('path');
+const createUploader = require('../helpers/createUploader');
 
-const storage = multer.diskStorage({
-    destination: path.join(__dirname, '..', 'public', 'data', 'uploads'),
+const publicDir = path.join(__dirname, '..', 'public');
+
+const imageTypes = Object.freeze({
+    '.jpg': 'image/jpeg',
+    '.jpeg': 'image/jpeg',
+    '.png': 'image/png',
+    '.webp': 'image/webp',
+});
+
+const courseCoverUpload = createUploader({
+    destination: path.join(publicDir, 'courses', 'covers'),
+    allowedTypes: imageTypes,
+    maxSizeMB: 5,
+});
+
+const userAvatarUpload = createUploader({
+    destination: path.join(publicDir, 'users', 'avatars'),
+    allowedTypes: imageTypes,
+    maxSizeMB: 2,
+    // deterministic name → a new avatar overwrites the old one
     filename: (req, file, cb) => {
-        cb(null, Date.now() + '-' + file.originalname)
-    }
-})
+        cb(null, `user-${req.user.id}${path.extname(file.originalname).toLowerCase()}`);
+    },
+});
 
-const fileFilter = (req, file, cb) => {
-    const ext = path.extname(file.originalname).toLowerCase();
+const courseVideoUpload = createUploader({
+    destination: path.join(publicDir, 'courses', 'videos'),
+    allowedTypes: { '.mp4': 'video/mp4', '.webm': 'video/webm' },
+    maxSizeMB: 500,
+});
 
-    const allowedTypes = {
-        '.jpg': 'image/jpeg',
-        '.jpeg': 'image/jpeg',
-        '.png': 'image/png',
-        '.webp': 'image/webp'
-    };
-
-    if (
-        allowedTypes[ext] &&
-        file.mimetype === allowedTypes[ext]
-    ) {
-        cb(null, true);
-    } else {
-        cb(new Error('Invalid file type'), false);
-    }
-};
-
-const upload = multer({
-    storage,
-    fileFilter,
-    limits: {
-        fileSize: 5 * 1024 * 1024 // 5 MB in bytes
-    }
-})
-module.exports = upload
+module.exports = { courseCoverUpload, userAvatarUpload, courseVideoUpload };
