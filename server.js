@@ -10,7 +10,7 @@ const userRouter = require("./routes/v1/user");
 const categoryRouter = require("./routes/v1/category");
 
 const { notFound, errorHandler, camelcase } = require("./middlewares/http");
-const { init } = require("./models/User");
+const { initModels } = require("./models/index");
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -30,7 +30,7 @@ app.use(errorHandler);
 const startServer = async () => {
     try {
         // Initialize Database Collections & Indexes
-        await init();
+        await initModels();
         console.log("Database initialized successfully.");
 
         // Start listening only after DB is ready

@@ -21,8 +21,7 @@ const getAllComments = async (req, res) => {
         res.json(comments);
 };
 
-const createComment = async (req, res, next) => {
-    try {
+const createComment = async (req, res) => {
         const data = Comment.parseOnly(req.body, ["content", "course", "parent"]);
         
         data.user = parseId(req.user.sub); 
@@ -31,15 +30,12 @@ const createComment = async (req, res, next) => {
 
         const newComment = await commentModel.create(data);
         res.status(201).json(newComment);
-    } catch (error) { next(error); }
 };
 
-const deleteComment = async (req, res, next) => {
-    try {
+const deleteComment = async (req, res) => {
         const id = parseId(req.params.id);
         const deletedComment = await commentModel.remove(id);
         res.json(found(deletedComment, "Comment"));
-    } catch (error) { next(error); }
 };
 
 module.exports = { getAllComments, createComment, deleteComment };
