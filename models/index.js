@@ -1,5 +1,5 @@
 const userModel = require("./User");
-const bannedModel = require("./Banned"); // If it has an init()
+const bannedModel = require("./Banned");
 const categoryModel = require("./Category");
 const courseModel = require("./Course");
 const sessionModel = require("./Session");
