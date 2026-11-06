@@ -22,7 +22,7 @@ const userAvatarUpload = createUploader({
     maxSizeMB: 2,
     // deterministic name → a new avatar overwrites the old one
     filename: (req, file, cb) => {
-        cb(null, `user-${req.user.id}${path.extname(file.originalname).toLowerCase()}`);
+        cb(null, `user-${req.user.sub}${path.extname(file.originalname).toLowerCase()}`);
     },
 });
 
@@ -33,3 +33,14 @@ const courseVideoUpload = createUploader({
 });
 
 module.exports = { courseCoverUpload, userAvatarUpload, courseVideoUpload };
+
+// req.file = {
+//   "fieldname": "cover",
+//   "originalname": "my-picture.jpg",
+//   "encoding": "7bit",
+//   "mimetype": "image/jpeg",
+//   "destination": "public/courses/covers",
+//   "filename": "cover-1718930000-123456789.jpg",
+//   "path": "public/courses/covers/cover-1718930000-123456789.jpg",
+//   "size": 2048000
+// }
