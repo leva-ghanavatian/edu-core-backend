@@ -33,14 +33,14 @@ const findById = async _id => {
     return sessions.findOne({ _id });
 };
 
-const create = async ({ title, duration, free, video, course }) => {
+const create = async ({ title, duration, free, video, courseId }) => {
     const sessions = await getCollection();
     const session = {
         title,
         duration,
         free,
         video,
-        course,
+        courseId,
         createdAt: new Date()
     };
 
