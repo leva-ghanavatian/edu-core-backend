@@ -14,7 +14,7 @@ module.exports = createResource({
     
     // Storing duration in total seconds. 12:09 => 729
     duration: {
-      type: "number", integer: true, min: 1,
+      type: "number", integer: true, min: 1, convert: true,
       messages: {
         required: "Duration is required.",
         number: "Duration must be a number (in seconds).",
@@ -25,7 +25,7 @@ module.exports = createResource({
 
     // 0 for false, 1 for true
     free: {
-      type: "number", integer: true, min: 0, max: 1,
+      type: "number", integer: true, min: 0, max: 1, convert: true,
       messages: {
         required: "Free status is required.",
         numberMin: "Free must be 0 or 1.",
@@ -33,14 +33,13 @@ module.exports = createResource({
       }
     },
 
-    // URL to the video
-    video: {
-      type: "string", trim: true, empty: false,
-      messages: {
-        required: "Video URL is required.",
-        stringEmpty: "Video URL is required."
-      }
-    },
+    // video: {
+    //   type: "string", trim: true, empty: false,
+    //   messages: {
+    //     required: "Video URL is required.",
+    //     stringEmpty: "Video URL is required."
+    //   }
+    // },
 
     course: objectId("Course")
   },
