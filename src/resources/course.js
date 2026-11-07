@@ -21,7 +21,7 @@ module.exports = createResource({
     support: text("Support", { max: 255 }),
 
     href: text("Href",
-      { min: 3, max: 50, pattern: /^[a-z0-9-]+$/ },
+      { min: 3, max: 50, pattern: /^[a-z0-9-]+$/ ,trim: true,},
       { stringPattern: "Href may only contain lowercase letters, numbers, and dashes." }
     ),
 
@@ -31,7 +31,7 @@ module.exports = createResource({
     },
 
     status: {
-      type: "string", enum: ["complete", "presell", "in-progress"],
+      type: "string", enum: ["complete", "presell", "in-progress"], trim: true,
       messages: { required: "Status is required.", stringEnum: "Status must be 'complete', 'presell', or 'in-progress'." }
     },
 
