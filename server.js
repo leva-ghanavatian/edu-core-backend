@@ -8,6 +8,7 @@ const authRouter = require("./routes/v1/auth");
 const userRouter = require("./routes/v1/user");
 const categoryRouter = require("./routes/v1/category");
 const courseRouter = require("./routes/v1/course");
+const sessionRouter = require("./routes/v1/session");
 
 const { notFound, errorHandler, camelcase } = require("./middlewares/http");
 const { initModels } = require("./models/index");
@@ -23,6 +24,7 @@ app.use("/v1/auth", authRouter);
 app.use("/v1/user", userRouter);
 app.use("/v1/category", categoryRouter);
 app.use("/v1/course", courseRouter);
+app.use("/v1/session", sessionRouter);
 
 // --- Error Handling  ---
 app.use(notFound);
