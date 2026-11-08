@@ -1,4 +1,5 @@
 const userModel = require("../../models/User");
+const commentModel = require("../../models/Comment");
 const Banned = require("../../models/Banned");
 const User = require("../../src/resources/user");
 const { parsePagination } = require("../../src/parsing/pagination");
@@ -66,8 +67,14 @@ const banUser = async (req, res) => {
 
 const deleteUser = async (req, res) => {
     const id = parseId(req.params.id);
-    const user = await userModel.deleteUser(id);
-    res.json(found(user, "User"));
+
+    const user = await userModel.findById(id);
+    found(user, "User");
+
+    await commentModel.removeByUser(id);
+
+    const deletedUser = await userModel.deleteUser(id);
+    res.json(deletedUser);
 };
 
 module.exports = {
