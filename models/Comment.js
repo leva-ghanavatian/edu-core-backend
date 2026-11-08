@@ -37,16 +37,32 @@ const create = async (data) => {
 
 const remove = async _id => {
     const comments = await getCollection();
-    
+
     // 1. Delete the comment
     const deleted = await comments.findOneAndDelete({ _id });
-    
+
     // 2. Cascade Delete: If it was a main comment, delete all replies to it!
     if (deleted) {
         await comments.deleteMany({ parent: _id });
     }
-    
+
     return deleted;
 };
 
-module.exports = { init, find, create, remove };
+const removeByCourse = async course => {
+    const comments = await getCollection();
+    return comments.deleteMany({ course });
+};
+
+// Deletes the user's comments AND every reply to them (regardless of author)
+const removeByUser = async user => {
+    const comments = await getCollection();
+    const own = await comments
+        .find({ user }, { projection: { _id: 1 } })
+        .toArray();
+    const ids = own.map(c => c._id);
+    if (!ids.length) return { deletedCount: 0 };
+    return comments.deleteMany({ $or: [{ _id: { $in: ids } }, { parent: { $in: ids } }] });
+};
+
+module.exports = { init, find, findById, create, remove, removeByCourse, removeByUser };
