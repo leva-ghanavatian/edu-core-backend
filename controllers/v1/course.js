@@ -85,6 +85,23 @@ const updateCourse = async (req, res) => {
         res.json(found(updatedCourse, "Course"));
 };
 
+const deleteCourseCascade = async course => {
+    const sessions = await sessionModel.findByCourse(course._id);
+
+    await commentModel.removeByCourse(course._id);
+    await sessionModel.removeByCourse(course._id);
+    const deleted = await courseModel.remove(course._id);
+
+    if (course.cover) {
+        await safeUnlink(path.join(COVERS_DIR, course.cover));
+    }
+    await Promise.all(
+        sessions.map(s => (s.video ? safeUnlink(path.join(VIDEOS_DIR, s.video)) : null))
+    );
+
+    return deleted;
+};
+
 const deleteCourse = async (req, res) => {
         const id = parseId(req.params.id);
         const deletedCourse = await courseModel.remove(id);
