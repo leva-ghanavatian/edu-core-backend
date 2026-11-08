@@ -20,27 +20,42 @@ const rethrowDuplicate = error => {
 
 const find = async ({ filter, sort, skip, limit }) => {
     const sessions = await getCollection();
-    return sessions
-        .find(filter)
-        .sort({ ...sort, _id: -1 })
-        .skip(skip)
-        .limit(limit)
-        .toArray();
+    return sessions.aggregate([
+        { $match: filter },
+        { $sort: { ...sort, _id: -1 } },
+        { $skip: skip },
+        { $limit: limit },
+        {
+            $lookup: {
+                from: "courses",        
+                localField: "course",    
+                foreignField: "_id",    
+                as: "course"
+            }
+        },
+        // $unwind turns the "course" array into a single object
+        { $unwind: { path: "$course", preserveNullAndEmptyArrays: true } }
+    ]).toArray();
 };
 
 const findById = async _id => {
     const sessions = await getCollection();
-    return sessions.findOne({ _id });
+
+    return sessions.aggregate([
+        { $match: { _id } },
+        { $lookup: { from: "courses", localField: "course", foreignField: "_id", as: "course" } },
+        { $unwind: { path: "$course", preserveNullAndEmptyArrays: true } }
+    ]).next();
 };
 
-const create = async ({ title, duration, free, video, courseId }) => {
+const create = async ({ title, duration, free, video, course }) => {
     const sessions = await getCollection();
     const session = {
         title,
         duration,
         free,
         video,
-        courseId,
+        course,
         createdAt: new Date()
     };
 

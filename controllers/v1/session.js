@@ -40,7 +40,7 @@ const createSession = async (req, res) => {
         console.log(req.file);
         
         data.video = req.file.filename;
-        data.courseId = parseId(req.params.id);
+        data.course = parseId(req.params.id);
 
         const newSession = await sessionModel.create(data);
         res.status(201).json(newSession);
