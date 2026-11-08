@@ -5,7 +5,10 @@ const Session = require("../../src/resources/session");
 const { parsePagination } = require("../../src/parsing/pagination");
 const { parseId } = require("../../src/parsing/id");
 const found = require("../../helpers/found");
+const unlink = require("../../helpers/files");
 const { ValidationError } = require("../../helpers/errors");
+
+const VIDEOS_DIR = path.join(__dirname, "../../public/courses/videos");
 
 const getAllSessions = async (req, res) => {
         const { page, limit, sort, ...filterQuery } = req.query;
@@ -60,17 +63,8 @@ const deleteSession = async (req, res) => {
         if (deletedSession && deletedSession.video) {
                 // __dirname is .../controllers/v1
                 // ../../ goes up to the root folder, then into public/courses/covers
-                const filePath = path.join(__dirname, "../../public/courses/videos", deletedSession.video);
+                await safeUnlink(path.join(VIDEOS_DIR, deletedSession.video));
 
-                try {
-                        await fs.promises.unlink(filePath);
-                } catch (err) {
-                        // If the file is already missing, we ignore it (err.code === 'ENOENT')
-                        // Otherwise, log the error but still send a successful response
-                        if (err.code !== 'ENOENT') {
-                                console.error(`Failed to delete cover image at ${filePath}:`, err);
-                        }
-                }
         }
         res.json(found(deletedSession, "Session"));
 };
