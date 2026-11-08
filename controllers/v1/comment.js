@@ -33,8 +33,23 @@ const createComment = async (req, res) => {
         res.status(201).json(newComment);
 };
 
+const { ForbiddenError } = require("../../helpers/errors");
+
 const deleteComment = async (req, res) => {
         const id = parseId(req.params.id);
+        const userId = parseId(req.user.sub);
+
+        const comment = await commentModel.findById(id);
+        found(comment, "Comment");
+
+        //  Authorization — owner or admin
+        const isOwner = comment.user?.equals(userId);
+        const isAdmin = req.user.role === "ADMIN";
+        if (!isOwner && !isAdmin) {
+                throw new ForbiddenError("You can only delete your own comments.");
+        }
+
+        //  Delete (cascades replies)
         const deletedComment = await commentModel.remove(id);
         res.json(found(deletedComment, "Comment"));
 };
