@@ -27,9 +27,9 @@ const find = async ({ filter, sort, skip, limit }) => {
         { $limit: limit },
         {
             $lookup: {
-                from: "courses",        
-                localField: "course",    
-                foreignField: "_id",    
+                from: "courses",
+                localField: "course",
+                foreignField: "_id",
                 as: "course"
             }
         },
@@ -46,6 +46,16 @@ const findById = async _id => {
         { $lookup: { from: "courses", localField: "course", foreignField: "_id", as: "course" } },
         { $unwind: { path: "$course", preserveNullAndEmptyArrays: true } }
     ]).next();
+};
+
+const findByCourse = async course => {
+    const sessions = await getCollection();
+    return sessions.find({ course }).toArray();
+};
+
+const removeByCourse = async course => {
+    const sessions = await getCollection();
+    return sessions.deleteMany({ course });
 };
 
 const create = async ({ title, duration, free, video, course }) => {
