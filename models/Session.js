@@ -99,7 +99,9 @@ module.exports = {
     init,
     find,
     findById,
+    findByCourse,
     create,
     update,
-    remove
+    remove,
+    removeByCourse
 };
