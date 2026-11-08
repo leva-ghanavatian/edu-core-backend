@@ -68,7 +68,7 @@ const createCourse = async (req, res) => {
         if (!req.file) {
                 throw new ValidationError("Course cover image is required.");
         }
-
+        
         data.cover = req.file.filename;
         data.creator = parseId(req.user.sub);
 
@@ -103,24 +103,13 @@ const deleteCourseCascade = async course => {
 };
 
 const deleteCourse = async (req, res) => {
-        const id = parseId(req.params.id);
-        const deletedCourse = await courseModel.remove(id);
-        if (deletedCourse && deletedCourse.cover) {
-                // __dirname is .../controllers/v1
-                // ../../ goes up to the root folder, then into public/courses/covers
-                const filePath = path.join(__dirname, "../../public/courses/covers", deletedCourse.cover);
+    const id = parseId(req.params.id);
 
-                try {
-                        await fs.promises.unlink(filePath);
-                } catch (err) {
-                        // If the file is already missing, we ignore it (err.code === 'ENOENT')
-                        // Otherwise, log the error but still send a successful response
-                        if (err.code !== 'ENOENT') {
-                                console.error(`Failed to delete cover image at ${filePath}:`, err);
-                        }
-                }
-        }
-        res.json(found(deletedCourse, "Course"));
+    const course = await courseModel.findById(id);
+    found(course, "Course");
+
+    const deleted = await deleteCourseCascade(course);
+    res.json(deleted);
 };
 
 module.exports = {
