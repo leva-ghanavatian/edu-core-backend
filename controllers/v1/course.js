@@ -13,9 +13,8 @@ const Course = require("../../src/resources/course");
 const { parsePagination } = require("../../src/parsing/pagination");
 const { parseId } = require("../../src/parsing/id");
 const found = require("../../helpers/found");
-const unlink = require("../../helpers/files");
+const safeUnlink = require("../../helpers/files");
 const { ValidationError } = require("../../helpers/errors");
-const { log } = require("console");
 
 const getAllCourses = async (req, res, next) => {
         const { page, limit, sort, ...filterQuery } = req.query;

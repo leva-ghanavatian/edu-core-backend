@@ -33,8 +33,6 @@ const createComment = async (req, res) => {
         res.status(201).json(newComment);
 };
 
-const { ForbiddenError } = require("../../helpers/errors");
-
 const deleteComment = async (req, res) => {
         const id = parseId(req.params.id);
         const userId = parseId(req.user.sub);
