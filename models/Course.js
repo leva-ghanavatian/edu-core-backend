@@ -66,7 +66,7 @@ const remove = async _id => {
     return courses.findOneAndDelete({ _id });
 };
 
-const findWithDetails = async _id => {
+const getCourseDetails = async _id => {
     const courses = await getCollection();
     return courses.aggregate([
         { $match: { _id } },
@@ -89,4 +89,4 @@ const findWithDetails = async _id => {
     ]).next();
 };
 
-module.exports = { init, find, findById, create, update, remove, findWithDetails };
+module.exports = { init, find, findById, create, update, remove, getCourseDetails };
