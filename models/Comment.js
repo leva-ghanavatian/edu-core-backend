@@ -20,6 +20,11 @@ const find = async ({ filter, sort, skip, limit }) => {
         .toArray();
 };
 
+const findById = async _id => {
+    const comments = await getCollection();
+    return comments.findOne({ _id });
+};
+
 const create = async (data) => {
     const comments = await getCollection();
     const comment = {
