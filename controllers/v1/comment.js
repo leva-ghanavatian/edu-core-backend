@@ -3,6 +3,7 @@ const Comment = require("../../src/resources/comment");
 const { parsePagination } = require("../../src/parsing/pagination");
 const { parseId } = require("../../src/parsing/id");
 const found = require("../../helpers/found");
+const { ForbiddenError } = require("../../helpers/errors");
 
 const getAllComments = async (req, res) => {
         const { page, limit, sort, ...filterQuery } = req.query;
@@ -12,20 +13,20 @@ const getAllComments = async (req, res) => {
         const { skip, limit: parsedLimit } = parsePagination({ page, limit });
 
         const comments = await commentModel.find({
-            filter,
-            sort: sortObj,
-            skip,
-            limit: parsedLimit
+                filter,
+                sort: sortObj,
+                skip,
+                limit: parsedLimit
         });
 
         res.json(comments);
 };
 
 const createComment = async (req, res) => {
-        const data = Comment.parseOnly(req.body, ["content", "course", "parent"]);
-        
-        data.user = parseId(req.user.sub); 
-        
+        const data = Comment.parseOnly(req.body, ["content", "parent"]);
+        data.course = parseId(req.params.id);
+        data.user = parseId(req.user.sub);
+
         if (!data.parent) delete data.parent;
 
         const newComment = await commentModel.create(data);
