@@ -1,11 +1,21 @@
-const fs = require("fs");
 const path = require("path");
+const { safeUnlink } = require("../../helpers/files");
+
+const COVERS_DIR = path.join(__dirname, "../../public/courses/covers");
+const VIDEOS_DIR = path.join(__dirname, "../../public/courses/videos");
+
+
 const courseModel = require("../../models/Course");
+const sessionModel = require("../../models/Session");
+const commentModel = require("../../models/Comment");
+
 const Course = require("../../src/resources/course");
 const { parsePagination } = require("../../src/parsing/pagination");
 const { parseId } = require("../../src/parsing/id");
 const found = require("../../helpers/found");
+const unlink = require("../../helpers/files");
 const { ValidationError } = require("../../helpers/errors");
+const { log } = require("console");
 
 const getAllCourses = async (req, res, next) => {
         const { page, limit, sort, ...filterQuery } = req.query;
