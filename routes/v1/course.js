@@ -13,7 +13,7 @@ const { courseCoverUpload, courseVideoUpload } = require("../../middlewares/uplo
 router.get("/", courseCont.getAllCourses);
 router.get("/:id", courseCont.getCourse);
 router.get("/:id/details", courseCont.getCourseDetails);
-router.post("/:id/comments", requireAuth, commentCont.createComment);
+router.post("/:id/comments", requireAuth, commentCont.createComment); // even people not registerd to course can comment on the course
 router.post("/:id/enroll", requireAuth, courseUserCont.enrollInCourse);
 
 router.post("/", requireAuth, requireAdmin, courseCoverUpload.single("cover"), courseCont.createCourse);

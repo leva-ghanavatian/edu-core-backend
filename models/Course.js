@@ -66,10 +66,56 @@ const remove = async _id => {
     return courses.findOneAndDelete({ _id });
 };
 
+// const getCourseDetails = async _id => {
+//     const courses = await getCollection();
+//     return courses.aggregate([
+//         { $match: { _id } },
+//         {
+//             $lookup: {
+//                 from: "categories",
+//                 localField: "category",
+//                 foreignField: "_id",
+//                 as: "category"
+//             }
+//         },
+//         { $unwind: { path: "$category", preserveNullAndEmptyArrays: true } },
+//         {
+//             $lookup: {
+//                 from: "sessions",
+//                 localField: "_id",
+//                 foreignField: "course",
+//                 as: "sessions"
+//             }
+//         },
+//         {
+//             $lookup: {
+//                 from: "comments",
+//                 localField: "_id",
+//                 foreignField: "course",
+//                 as: "comments"
+//             }
+//         }
+//     ]).next();
+// };
+
 const getCourseDetails = async _id => {
     const courses = await getCollection();
     return courses.aggregate([
+        // 1. Find the course
         { $match: { _id } },
+
+        // 2. Get the Category (and flatten it)
+        {
+            $lookup: {
+                from: "categories",
+                localField: "category",
+                foreignField: "_id",
+                as: "categoryData"
+            }
+        },
+        { $unwind: { path: "$categoryData", preserveNullAndEmptyArrays: true } },
+
+        // 3. Get Sessions 
         {
             $lookup: {
                 from: "sessions",
@@ -78,6 +124,8 @@ const getCourseDetails = async _id => {
                 as: "sessions"
             }
         },
+
+        // 4. Get Comments  needs to send the commenters data too.
         {
             $lookup: {
                 from: "comments",
@@ -85,6 +133,35 @@ const getCourseDetails = async _id => {
                 foreignField: "course",
                 as: "comments"
             }
+        },
+
+        // 5. Get Students Count (Assuming collection name is course_users)
+        {
+            $lookup: {
+                from: "course_users",
+                localField: "_id",
+                foreignField: "course",
+                as: "enrolledStudents"
+            }
+        },
+
+        // 6. Add the count and replace category with categoryData
+        {
+            $addFields: {
+                courseStudentsCount: { $size: "$enrolledStudents" },
+                category: "$categoryData" // Swap the category field
+            }
+        },
+
+        // 7. Remove the temporary arrays we created
+        { $unset: ["enrolledStudents", "categoryData"] },
+
+        // 8. MAGIC STEP: Merge the current course into the root
+        // (Wait, in your screenshot, the course is already wrapped. 
+        // If it is wrapped because of a previous $group, use $replaceRoot).
+        // Assuming the above $lookups leave the root document intact:
+        {
+            $replaceRoot: { newRoot: "$$ROOT" } 
         }
     ]).next();
 };

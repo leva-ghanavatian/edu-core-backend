@@ -21,7 +21,6 @@ const enrollInCourse = async (req, res) => {
         });
 
         res.status(201).json(enrollment);
-
 };
 
 const getMyCourses = async (req, res, next) => {

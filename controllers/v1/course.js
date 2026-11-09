@@ -13,7 +13,6 @@ const Course = require("../../src/resources/course");
 const { parsePagination } = require("../../src/parsing/pagination");
 const { parseId } = require("../../src/parsing/id");
 const found = require("../../helpers/found");
-const safeUnlink = require("../../helpers/files");
 const { ValidationError } = require("../../helpers/errors");
 
 const getAllCourses = async (req, res, next) => {
@@ -39,7 +38,7 @@ const getAllCourses = async (req, res, next) => {
 
 const getCourse = async (req, res, next) => {
         const id = parseId(req.params.id);
-        const course = await courseModel.getCourseDetails(id);
+        const course = await courseModel.findById(id);
 
         if (course && course.cover) {
                 // Modify the cover string to be a full path
@@ -51,7 +50,7 @@ const getCourse = async (req, res, next) => {
 
 const getCourseDetails = async (req, res) => {
         const id = parseId(req.params.id);
-        const course = await courseModel.findWithDetails(id);
+        const course = await courseModel.getCourseDetails(id);
 
         if (course && course.cover) {
                 // Modify the cover string to be a full path
