@@ -27,10 +27,24 @@ const getAllSessions = async (req, res) => {
         res.json(sessions);
 };
 
-const getSession = async (req, res) => {
-        const id = parseId(req.params.id);
-        const session = await sessionModel.findById(id);
-        res.json(found(session, "Session"));
+const getSession = async (req, res, next) => {
+    try {
+        const sessionId = parseId(req.params.id);
+        const userId = parseId(req.user.sub); // From token
+
+        const session = await sessionModel.findById(sessionId);
+        if (!session) throw new NotFoundError("Session not found");
+
+        // If the session is NOT free, check if they are enrolled!
+        if (session.free === 0) {
+            const isEnrolled = await courseUserModel.isUserEnrolled(session.course, userId);
+            if (!isEnrolled) {
+                throw new ForbiddenError("You must purchase this course to watch this video.");
+            }
+        }
+
+        res.json(session);
+    } catch (error) { next(error); }
 };
 
 const createSession = async (req, res) => {

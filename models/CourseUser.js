@@ -56,4 +56,15 @@ const findByUser = async (userId) => {
     ]).toArray();
 };
 
-module.exports = { init, create, findByUser };
+const isUserEnrolled = async (courseId, userId) => {
+    const courseUsers = await getCollection();
+    
+    const enrollment = await courseUsers.findOne(
+        { course: courseId, user: userId },
+        { projection: { _id: 1 } }
+    );
+    
+    return !!enrollment; // Returns true if found, false if null
+};
+
+module.exports = { init, create, findByUser, isUserEnrolled };
