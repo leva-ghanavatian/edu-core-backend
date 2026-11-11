@@ -60,13 +60,31 @@ const getCourseDetails = async (req, res) => {
         res.json(found(course, "Course"));
 };
 
+const getRelatedCourses = async (req, res) => {
+        const id = parseId(req.params.id);
+        const course = await courseModel.findById(id);
+        found(course);
+
+        const relatedCourses = await courseModel.find({
+                filter: {
+                        category: course.category,
+                        _id: { $ne: id }
+                },
+                sort: { createdAt: -1 },
+                skip: 0,
+                limit: 10
+        });
+
+        res.status(200).json(relatedCourses);
+}
+
 const createCourse = async (req, res) => {
         const data = Course.parseCreate(req.body);
 
         if (!req.file) {
                 throw new ValidationError("Course cover image is required.");
         }
-        
+
         data.cover = req.file.filename;
         data.creator = parseId(req.user.sub);
 
@@ -84,32 +102,33 @@ const updateCourse = async (req, res) => {
 };
 
 const deleteCourseCascade = async course => {
-    const sessions = await sessionModel.findByCourse(course._id);
+        const sessions = await sessionModel.findByCourse(course._id);
 
-    await commentModel.removeByCourse(course._id);
-    await sessionModel.removeByCourse(course._id);
-    const deleted = await courseModel.remove(course._id);
+        await commentModel.removeByCourse(course._id);
+        await sessionModel.removeByCourse(course._id);
+        const deleted = await courseModel.remove(course._id);
 
-    if (course.cover) {
-        await safeUnlink(path.join(COVERS_DIR, course.cover));
-    }
-    await Promise.all(
-        sessions.map(s => (s.video ? safeUnlink(path.join(VIDEOS_DIR, s.video)) : null))
-    );
+        if (course.cover) {
+                await safeUnlink(path.join(COVERS_DIR, course.cover));
+        }
+        await Promise.all(
+                sessions.map(s => (s.video ? safeUnlink(path.join(VIDEOS_DIR, s.video)) : null))
+        );
 
-    return deleted;
+        return deleted;
 };
 
 const deleteCourse = async (req, res) => {
-    const id = parseId(req.params.id);
+        const id = parseId(req.params.id);
 
-    const course = await courseModel.findById(id);
-    found(course, "Course");
+        const course = await courseModel.findById(id);
+        found(course, "Course");
 
-    const deleted = await deleteCourseCascade(course);
-    res.json(deleted);
+        const deleted = await deleteCourseCascade(course);
+        res.json(deleted);
 };
 
 module.exports = {
-        getAllCourses, getCourse, getCourseDetails, createCourse, updateCourse, deleteCourse
+        getAllCourses, getCourse, getCourseDetails, getRelatedCourses,
+        createCourse, updateCourse, deleteCourse
 };
