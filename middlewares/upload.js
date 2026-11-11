@@ -32,7 +32,21 @@ const courseVideoUpload = createUploader({
     maxSizeMB: 500,
 });
 
-module.exports = { courseCoverUpload, userAvatarUpload, courseVideoUpload };
+const documentTypes = Object.freeze({
+    '.jpg': 'image/jpeg',
+    '.jpeg': 'image/jpeg',
+    '.png': 'image/png',
+    '.pdf': 'application/pdf',
+    '.zip': 'application/zip'
+});
+
+const contactAttachmentUpload = createUploader({
+    destination: path.join(publicDir, 'contacts', 'attachments'),
+    allowedTypes: documentTypes,
+    maxSizeMB: 10, // Allow up to 10MB for attachments
+});
+
+module.exports = { courseCoverUpload, userAvatarUpload, courseVideoUpload, contactAttachmentUpload };
 
 // req.file = {
 //   "fieldname": "cover",
