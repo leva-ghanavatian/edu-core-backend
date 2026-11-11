@@ -5,6 +5,7 @@ const courseModel = require("./Course");
 const courseUserModel = require("./CourseUser");
 const sessionModel = require("./Session");
 const commentModel = require("./Comment");
+const contactModel = require("./Contact");
 
 const initModels = () => Promise.all([
     userModel.init(),
@@ -14,6 +15,7 @@ const initModels = () => Promise.all([
     courseUserModel.init(),
     sessionModel.init(),
     commentModel.init(),
+    contactModel.init()
 ]);
 
 module.exports = { initModels };
