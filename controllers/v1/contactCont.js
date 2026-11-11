@@ -1,10 +1,10 @@
 const fs = require("fs");
 const path = require("path");
-const contactModel = require("../models/Contact");
-const Contact = require("../src/resources/contact");
-const { parseId } = require("../src/parsing/id");
-const { parsePagination } = require("../src/parsing/pagination");
-const found = require("../helpers/found");
+const contactModel = require("../../models/Contact");
+const Contact = require("../../src/resources/contact");
+const { parseId } = require("../../src/parsing/id");
+const { parsePagination } = require("../../src/parsing/pagination");
+const found = require("../../helpers/found");
 
 const submitContact = async (req, res) => {
     let filePath = null;
