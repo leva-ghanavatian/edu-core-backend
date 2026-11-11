@@ -10,6 +10,7 @@ const categoryRouter = require("./routes/v1/category");
 const courseRouter = require("./routes/v1/course");
 const sessionRouter = require("./routes/v1/session");
 const commentRouter = require("./routes/v1/comment");
+const contactRouter = require("./routes/v1/contact");
 
 const { notFound, errorHandler, camelcase } = require("./middlewares/http");
 const { initModels } = require("./models/index");
@@ -27,6 +28,7 @@ app.use("/v1/category", categoryRouter);
 app.use("/v1/course", courseRouter);
 app.use("/v1/session", sessionRouter);
 app.use("/v1/comment", commentRouter);
+app.use("/v1/contact", contactRouter);
 
 // --- Error Handling  ---
 app.use(notFound);
