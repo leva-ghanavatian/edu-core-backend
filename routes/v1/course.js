@@ -11,8 +11,9 @@ const { requireJsonBody } = require("../../middlewares/http");
 const { courseCoverUpload, courseVideoUpload } = require("../../middlewares/upload");
 
 router.get("/", courseCont.getAllCourses);
-router.get("/:id", courseCont.getCourse);
 router.get("/:id/details", courseCont.getCourseDetails);
+router.get("/:id/related", courseCont.getRelatedCourses);
+router.get("/:id", courseCont.getCourse);
 router.post("/:id/comments", requireAuth, commentCont.createComment); // even people not registerd to course can comment on the course
 router.post("/:id/enroll", requireAuth, courseUserCont.enrollInCourse);
 
