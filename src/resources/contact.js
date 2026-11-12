@@ -20,16 +20,23 @@ module.exports = createResource({
     },
     phone: { type: "string", trim: true, optional: true, max: 20 },
     subject: text("Subject", { max: 150 }),
-    message: text("Message", { max: 2000 })
+    message: text("Message", { max: 2000 }),
+    replyMessage: {
+      type: "string", trim: true, optional: true, max: 2000,
+      messages: {
+        string: "Reply must be a string.",
+        stringMax: "Reply must be at most {expected} characters."
+      }
+    },
   },
-  
-  filterFields: ["email", "status"],
-  
+
+  filterFields: ["email"],
+
   filterExtras: {
     status: { type: "string", enum: ["NEW", "IN_PROGRESS", "RESOLVED"] },
     createdAt: { type: "date" }
   },
-  
+
   sortable: ["createdAt", "status"],
   defaultSort: { createdAt: -1 }
 });
