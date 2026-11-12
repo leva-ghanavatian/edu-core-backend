@@ -1,10 +1,12 @@
 const fs = require("fs");
-const path = require("path");
+const nodemailer = require("nodemailer");
 const contactModel = require("../../models/Contact");
 const Contact = require("../../src/resources/contact");
 const { parseId } = require("../../src/parsing/id");
 const { parsePagination } = require("../../src/parsing/pagination");
 const found = require("../../helpers/found");
+const { sendEmail } = require("../../helpers/mailer");
+const { NotFoundError } = require("../../helpers/errors");
 
 const submitContact = async (req, res) => {
     let filePath = null;
@@ -49,4 +51,32 @@ const updateContactStatus = async (req, res) => {
 
 };
 
-module.exports = { submitContact, getAllContacts, updateContactStatus };
+const replyToContact = async (req, res, next) => {
+    try {
+        const id = parseId(req.params.id);
+        
+        const { replyMessage } = Contact.parseOnly(req.body, ["replyMessage"]);
+        if (!replyMessage) throw new ValidationError("Reply message is required");
+
+        const contact = await contactModel.findById(id);
+        if (!contact) throw new NotFoundError("Contact ticket not found");
+
+        await sendEmail({
+            to: contact.email,
+            subject: `Re: ${contact.subject}`,
+            text: replyMessage
+        });
+
+        // Mark the ticket as RESOLVED in the database
+        const updatedTicket = await contactModel.updateStatus(id, "RESOLVED");
+
+        res.json({ 
+            message: "Reply sent successfully", 
+            ticket: updatedTicket 
+        });
+    } catch (error) { 
+        next(error); 
+    }
+};
+
+module.exports = { submitContact, getAllContacts, updateContactStatus, replyToContact };
