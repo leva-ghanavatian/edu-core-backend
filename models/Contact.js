@@ -7,6 +7,11 @@ const init = async () => {
     await contacts.createIndex({ status: 1, createdAt: -1 });
 };
 
+const findById = async _id => {
+    const contacts = await getCollection();
+    return contacts.findOne({ _id });
+};
+
 const create = async (data) => {
     const contacts = await getCollection();
     const ticket = {
@@ -32,4 +37,4 @@ const updateStatus = async (_id, status) => {
     );
 };
 
-module.exports = { init, create, find, updateStatus };
+module.exports = { findById, init, create, find, updateStatus };
