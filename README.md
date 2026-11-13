@@ -169,19 +169,6 @@ All routes are prefixed with `/api/v1`.
 | **Teacher** | Create and manage own courses, upload lesson videos               |
 | **Admin**   | Manage users and platform-wide resources                          |
 
-## Contributing
-
-Contributions are welcome.
-
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/your-feature`
-3. Commit your changes: `git commit -m "Add your feature"`
-4. Push to the branch: `git push origin feature/your-feature`
-5. Open a Pull Request
-
-## License
-
-Distributed under the ISC License.
 
 ## Author
 
