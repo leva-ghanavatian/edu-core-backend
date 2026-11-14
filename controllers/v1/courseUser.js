@@ -2,7 +2,7 @@ const courseUserModel = require("../../models/CourseUser");
 const courseModel = require("../../models/Course");
 const offModel = require("../../models/Off");
 const { parseId } = require("../../src/parsing/id");
-const { NotFoundError } = require("../../helpers/errors");
+const { NotFoundError, ConflictError } = require("../../helpers/errors");
 
 const enrollInCourse = async (req, res) => {
 
