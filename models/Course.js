@@ -36,10 +36,21 @@ const findById = async _id => {
 
 const create = async (data) => {
     const courses = await getCollection();
+
     const course = {
-        ...data,
+        name: data.name,
+        description: data.description,
+        support: data.support,
+        href: data.href,
+        price: data.price,
+        status: data.status,
+        discount: data.discount,
+        category: data.category,
+        cover: data.cover,
+        creator: data.creator,
         createdAt: new Date()
     };
+    
     try {
         const { insertedId } = await courses.insertOne(course);
         return { ...course, _id: insertedId };
@@ -161,7 +172,7 @@ const getCourseDetails = async _id => {
         // If it is wrapped because of a previous $group, use $replaceRoot).
         // Assuming the above $lookups leave the root document intact:
         {
-            $replaceRoot: { newRoot: "$$ROOT" } 
+            $replaceRoot: { newRoot: "$$ROOT" }
         }
     ]).next();
 };

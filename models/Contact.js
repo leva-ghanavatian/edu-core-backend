@@ -15,10 +15,16 @@ const findById = async _id => {
 const create = async (data) => {
     const contacts = await getCollection();
     const ticket = {
-        ...data,
-        status: "NEW", // Default status
+        name: data.name,
+        email: data.email,
+        subject: data.subject,
+        message: data.message,
+        status: "NEW",
         createdAt: new Date()
     };
+    if (data.phone) ticket.phone = data.phone;
+    if (data.attachment) ticket.attachment = data.attachment;
+
     const { insertedId } = await contacts.insertOne(ticket);
     return { ...ticket, _id: insertedId };
 };

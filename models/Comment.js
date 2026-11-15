@@ -27,10 +27,15 @@ const findById = async _id => {
 
 const create = async (data) => {
     const comments = await getCollection();
+    
     const comment = {
-        ...data,
+        content: data.content,
+        course: data.course,
+        user: data.user,
         createdAt: new Date()
     };
+    if (data.parent) comment.parent = data.parent;
+
     const { insertedId } = await comments.insertOne(comment);
     return { ...comment, _id: insertedId };
 };

@@ -13,10 +13,20 @@ const init = async () => {
 
 const create = async (data) => {
     const tickets = await getCollection();
+
     const ticket = {
-        ...data,
+        departmentID: data.departmentID,
+        departmentSubID: data.departmentSubID,
+        priority: data.priority,
+        title: data.title,
+        body: data.body,
+        user: data.user,
+        answered: data.answered !== undefined ? data.answered : 0,
         createdAt: new Date()
     };
+    
+    if (data.course) ticket.course = data.course;
+    if (data.parent) ticket.parent = data.parent;
     const { insertedId } = await tickets.insertOne(ticket);
     return { ...ticket, _id: insertedId };
 };
