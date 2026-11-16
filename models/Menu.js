@@ -10,7 +10,14 @@ const init = async () => {
 
 const create = async (data) => {
     const menus = await getCollection();
-    const menu = { ...data, createdAt: new Date() };
+
+    const menu = {
+        title: data.title,
+        href: data.href,
+        createdAt: new Date()
+    };
+    if (data.parent) menu.parent = data.parent;
+
     const { insertedId } = await menus.insertOne(menu);
     return { ...menu, _id: insertedId };
 };
