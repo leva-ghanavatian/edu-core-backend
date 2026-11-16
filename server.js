@@ -12,6 +12,9 @@ const sessionRouter = require("./routes/v1/session");
 const commentRouter = require("./routes/v1/comment");
 const contactRouter = require("./routes/v1/contact");
 const notifRouter = require("./routes/v1/notification");
+const departmentRouter = require("./routes/v1/department");
+const ticketRouter = require("./routes/v1/ticket");
+const menuRouter = require("./routes/v1/menu");
 
 const { notFound, errorHandler, camelcase } = require("./middlewares/http");
 const { initModels } = require("./models/index");
@@ -31,6 +34,9 @@ app.use("/v1/session", sessionRouter);
 app.use("/v1/comment", commentRouter);
 app.use("/v1/contact", contactRouter);
 app.use("/v1/notification", notifRouter);
+app.use("/v1/department", departmentRouter);
+app.use("/v1/ticket", ticketRouter);
+app.use("/v1/menu", menuRouter);
 
 // --- Error Handling  ---
 app.use(notFound);
