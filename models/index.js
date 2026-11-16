@@ -6,6 +6,10 @@ const courseUserModel = require("./CourseUser");
 const sessionModel = require("./Session");
 const commentModel = require("./Comment");
 const contactModel = require("./Contact");
+const notificationModel = require("./Notification");
+const departmentModel = require("./Department");
+const subDepartmentModel = require("./SubDepartmant");
+const menuModel = require("./Menu");
 
 const initModels = () => Promise.all([
     userModel.init(),
@@ -15,7 +19,11 @@ const initModels = () => Promise.all([
     courseUserModel.init(),
     sessionModel.init(),
     commentModel.init(),
-    contactModel.init()
+    contactModel.init(),
+    notificationModel.init(),
+    departmentModel.init(),
+    subDepartmentModel.init(),
+    menuModel.init()
 ]);
 
 module.exports = { initModels };
