@@ -39,19 +39,40 @@ const create = async (data) => {
     const { insertedId } = await comments.insertOne(comment);
     return { ...comment, _id: insertedId };
 };
+// one level deep 
 
-const remove = async _id => {
+// const remove = async _id => {
+//     const comments = await getCollection();
+
+//     // 1. Delete the comment
+//     const deleted = await comments.findOneAndDelete({ _id });
+
+//     // 2. Cascade Delete: If it was a main comment, delete all replies to it!
+//     if (deleted) {
+//         await comments.deleteMany({ parent: _id });
+//     }
+
+//     return deleted;
+// };
+
+const remove = async (id) => {
     const comments = await getCollection();
+    const comment = await comments.findOne({ _id: id });
+    if (!comment) return null;
 
-    // 1. Delete the comment
-    const deleted = await comments.findOneAndDelete({ _id });
+    const idsToDelete = [id];
+    let currentLevel = [id];
 
-    // 2. Cascade Delete: If it was a main comment, delete all replies to it!
-    if (deleted) {
-        await comments.deleteMany({ parent: _id });
+    while (currentLevel.length) {
+        const children = await comments
+            .find({ parent: { $in: currentLevel } }, { projection: { _id: 1 } })
+            .toArray();
+        currentLevel = children.map(c => c._id);
+        idsToDelete.push(...currentLevel);
     }
 
-    return deleted;
+    await comments.deleteMany({ _id: { $in: idsToDelete } });
+    return comment;
 };
 
 const removeByCourse = async course => {
