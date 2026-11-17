@@ -49,7 +49,7 @@ const getAllComments = async (req, res) => {
 
 const getCourseComments = async (req, res, next) => {
     try {
-        const { courseId } = parseId(req.params.id);
+        const  courseId  = parseId(req.params.id);
         const { page, limit } = req.query;
         const { skip, limit: parsedLimit } = parsePagination({ page, limit });
 
