@@ -86,6 +86,17 @@ const getCourseComments = async (req, res, next) => {
                         filter: { _id: { $in: userIds.map(id => parseId(id)) } },
                         limit: 1000
                 });
+
+                // 7. Create a dictionary of users for fast lookup
+                const userMap = {};
+                users.forEach(user => {
+                        // Only keep the safe fields! Never send the password hash.
+                        userMap[user._id.toString()] = {
+                                _id: user._id,
+                                name: user.name,
+                                username: user.username
+                        };
+                });
                 //  Build the tree!
                 const commentTree = buildCommentTree(allComments);
 
