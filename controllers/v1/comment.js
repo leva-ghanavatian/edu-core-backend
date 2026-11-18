@@ -1,4 +1,5 @@
 const commentModel = require("../../models/Comment");
+const commentModel = require("../../models/User");
 const Comment = require("../../src/resources/comment");
 const { parsePagination } = require("../../src/parsing/pagination");
 const { parseId } = require("../../src/parsing/id");
@@ -48,43 +49,48 @@ const getAllComments = async (req, res) => {
 // };
 
 const getCourseComments = async (req, res, next) => {
-    try {
-        const  courseId  = parseId(req.params.id);
-        const { page, limit } = req.query;
-        const { skip, limit: parsedLimit } = parsePagination({ page, limit });
+        try {
+                const courseId = parseId(req.params.id);
+                const { page, limit } = req.query;
+                const { skip, limit: parsedLimit } = parsePagination({ page, limit });
 
-        // 1. Get Top-Level Comments (Paginated)
-        const rootComments = await commentModel.find({
-            filter: { course: courseId, parent: null },
-            sort: { createdAt: -1 },
-            skip,
-            limit: parsedLimit
-        });
+                // 1. Get Top-Level Comments (Paginated)
+                const rootComments = await commentModel.find({
+                        filter: { course: courseId, parent: null },
+                        sort: { createdAt: -1 },
+                        skip,
+                        limit: parsedLimit
+                });
 
-        if (rootComments.length === 0) return res.json([]);
+                if (rootComments.length === 0) return res.json([]);
 
-        // 2. Get the IDs of those root comments
-        const rootIds = rootComments.map(c => c._id);
+                // 2. Get the IDs of those root comments
+                const rootIds = rootComments.map(c => c._id);
 
-        // 3. Fetch ALL replies that belong to those root comments
-        const replies = await commentModel.find({
-            filter: { parent: { $in: rootIds } },
-            sort: { createdAt: 1 }, // Replies usually oldest first
-            skip: 0,
-            limit: 5000 // Fetch all replies for these specific parents
-        });
+                // 3. Fetch ALL replies that belong to those root comments
+                const replies = await commentModel.find({
+                        filter: { parent: { $in: rootIds } },
+                        sort: { createdAt: 1 }, // Replies usually oldest first
+                        skip: 0,
+                        limit: 5000 // Fetch all replies for these specific parents
+                });
 
-        // 4. Combine them into one flat array
-        const allComments = [...rootComments, ...replies];
+                // 4. Combine them into one flat array
+                const allComments = [...rootComments, ...replies];
 
-        // 5. Extract all unique User IDs from the comments
-        const userIds = [...new Set(allComments.map(c => c.user.toString()))];
+                // 5. Extract all unique User IDs from the comments
+                const userIds = [...new Set(allComments.map(c => c.user.toString()))];
 
-        //  Build the tree!
-        const commentTree = buildCommentTree(allComments);
+                // 6. Fetch those users from the database
+                const users = await userModel.find({
+                        filter: { _id: { $in: userIds.map(id => parseId(id)) } },
+                        limit: 1000
+                });
+                //  Build the tree!
+                const commentTree = buildCommentTree(allComments);
 
-        res.json(commentTree);
-    } catch (error) { next(error); }
+                res.json(commentTree);
+        } catch (error) { next(error); }
 };
 
 const createComment = async (req, res) => {
