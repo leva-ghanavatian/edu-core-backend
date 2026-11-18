@@ -97,6 +97,15 @@ const getCourseComments = async (req, res, next) => {
                                 username: user.username
                         };
                 });
+                
+                // 8. Replace the user ID with the user object in the comments
+                allComments = allComments.map(comment => {
+                        return {
+                                ...comment,
+                                user: userMap[comment.user.toString()] || { name: "Unknown User" }
+                        };
+                });
+
                 //  Build the tree!
                 const commentTree = buildCommentTree(allComments);
 
