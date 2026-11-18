@@ -55,7 +55,7 @@ const getCourseComments = async (req, res, next) => {
                 const { skip, limit: parsedLimit } = parsePagination({ page, limit });
 
                 // 1. Get Top-Level Comments (Paginated)
-                const rootComments = await commentModel.find({
+                const rootComments = await commentModel.findWithUser({
                         filter: { course: courseId, parent: null },
                         sort: { createdAt: -1 },
                         skip,
@@ -68,7 +68,7 @@ const getCourseComments = async (req, res, next) => {
                 const rootIds = rootComments.map(c => c._id);
 
                 // 3. Fetch ALL replies that belong to those root comments
-                const replies = await commentModel.find({
+                const replies = await commentModel.findWithUser({
                         filter: { parent: { $in: rootIds } },
                         sort: { createdAt: 1 }, // Replies usually oldest first
                         skip: 0,
@@ -78,33 +78,6 @@ const getCourseComments = async (req, res, next) => {
                 // 4. Combine them into one flat array
                 const allComments = [...rootComments, ...replies];
 
-                // 5. Extract all unique User IDs from the comments
-                const userIds = [...new Set(allComments.map(c => c.user.toString()))];
-
-                // 6. Fetch those users from the database
-                const users = await userModel.find({
-                        filter: { _id: { $in: userIds.map(id => parseId(id)) } },
-                        limit: 1000
-                });
-
-                // 7. Create a dictionary of users for fast lookup
-                const userMap = {};
-                users.forEach(user => {
-                        // Only keep the safe fields! Never send the password hash.
-                        userMap[user._id.toString()] = {
-                                _id: user._id,
-                                name: user.name,
-                                username: user.username
-                        };
-                });
-                
-                // 8. Replace the user ID with the user object in the comments
-                allComments = allComments.map(comment => {
-                        return {
-                                ...comment,
-                                user: userMap[comment.user.toString()] || { name: "Unknown User" }
-                        };
-                });
 
                 //  Build the tree!
                 const commentTree = buildCommentTree(allComments);
