@@ -77,7 +77,10 @@ const getCourseComments = async (req, res, next) => {
         // 4. Combine them into one flat array
         const allComments = [...rootComments, ...replies];
 
-        // 5. Build the tree!
+        // 5. Extract all unique User IDs from the comments
+        const userIds = [...new Set(allComments.map(c => c.user.toString()))];
+
+        //  Build the tree!
         const commentTree = buildCommentTree(allComments);
 
         res.json(commentTree);
