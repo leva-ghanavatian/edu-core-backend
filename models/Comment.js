@@ -25,6 +25,38 @@ const findById = async _id => {
     return comments.findOne({ _id });
 };
 
+const findWithUser = async ({ filter, sort, skip, limit }) => {
+    const comments = await getCollection();
+    return comments.aggregate([
+        { $match: filter },
+        { $sort: { ...sort, _id: -1 } }, // tie-breaker for stable pagination
+        { $skip: skip },
+        { $limit: limit },
+        
+        {
+            $lookup: {
+                from: "users",
+                localField: "user",
+                foreignField: "_id",
+                pipeline: [
+                    // returning the fields the frontend actually needs
+                    // This is crucial for security and performance.
+                    { $project: { _id: 1, name: 1, username: 1 } }
+                ],
+                as: "userData"
+            }
+        },
+        // Flatten the array (convert [{...}] to {...})
+        { $unwind: { path: "$userData", preserveNullAndEmptyArrays: true } },
+        
+        // Replace the ObjectId string with the actual user object
+        { $addFields: { user: "$userData" } },
+        
+        // Clean up the temporary 'userData' field
+        { $unset: ["userData"] }
+    ]).toArray();
+};
+
 const create = async (data) => {
     const comments = await getCollection();
     
@@ -91,4 +123,4 @@ const removeByUser = async user => {
     return comments.deleteMany({ $or: [{ _id: { $in: ids } }, { parent: { $in: ids } }] });
 };
 
-module.exports = { init, find, findById, create, remove, removeByCourse, removeByUser };
+module.exports = { init, find, findById, findWithUser, create, remove, removeByCourse, removeByUser };
