@@ -1,5 +1,6 @@
 require("dotenv").config();
 const express = require("express");
+var session = require('express-session')
 const cors = require("cors");
 const bodyParser = require("body-parser");
 
@@ -23,6 +24,20 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json())
 app.use(camelcase);
+app.use(session({
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: true,
+  cookie: function(req) {
+    var match = req.url.match(/^\/([^/]+)/);
+    return {
+      path: match ? '/' + match[1] : '/',
+      httpOnly: true,
+      secure: req.secure || false,
+      maxAge: 60000
+    }
+  }
+}))
 
 
 // --- Routes ---
