@@ -16,6 +16,7 @@ const notifRouter = require("./routes/v1/notification");
 const departmentRouter = require("./routes/v1/department");
 const ticketRouter = require("./routes/v1/ticket");
 const menuRouter = require("./routes/v1/menu");
+const cookieRouter = require("./routes/v1/cookies");
 
 const { notFound, errorHandler, camelcase } = require("./middlewares/http");
 const { initModels } = require("./models/index");
@@ -52,6 +53,7 @@ app.use("/v1/notification", notifRouter);
 app.use("/v1/department", departmentRouter);
 app.use("/v1/ticket", ticketRouter);
 app.use("/v1/menu", menuRouter);
+app.use("/v1/cookie", cookieRouter);
 
 // --- Error Handling  ---
 app.use(notFound);
