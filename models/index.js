@@ -8,7 +8,7 @@ const commentModel = require("./Comment");
 const contactModel = require("./Contact");
 const notificationModel = require("./Notification");
 const departmentModel = require("./Department");
-const subDepartmentModel = require("./SubDepartmant");
+const subDepartmentModel = require("./SubDepartment");
 const menuModel = require("./Menu");
 
 const initModels = () => Promise.all([
