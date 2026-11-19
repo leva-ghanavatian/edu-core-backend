@@ -1,5 +1,6 @@
 require("dotenv").config();
 const express = require("express");
+var cookieParser = require('cookie-parser')
 var session = require('express-session')
 const cors = require("cors");
 const bodyParser = require("body-parser");
@@ -24,6 +25,7 @@ const { initModels } = require("./models/index");
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json())
+app.use(cookieParser())
 app.use(camelcase);
 app.use(session({
   secret: 'keyboard cat',
