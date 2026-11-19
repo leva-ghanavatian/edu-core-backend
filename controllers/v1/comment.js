@@ -1,5 +1,4 @@
 const commentModel = require("../../models/Comment");
-const commentModel = require("../../models/User");
 const Comment = require("../../src/resources/comment");
 const { parsePagination } = require("../../src/parsing/pagination");
 const { parseId } = require("../../src/parsing/id");
