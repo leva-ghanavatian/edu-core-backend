@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const ticketCont = require("../../controllers/v1/ticketCont");
+const ticketCont = require("../../controllers/v1/ticket");
 const { requireAuth, requireAdmin } = require("../../middlewares/auth");
 const { requireJsonBody } = require("../../middlewares/http");
 
