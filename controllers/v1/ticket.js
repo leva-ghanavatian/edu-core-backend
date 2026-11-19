@@ -75,4 +75,18 @@ const setAnswer = async (req, res, next) => {
     } catch (error) { next(error); }
 };
 
+const getTicketAnswer = async (req, res, next) => {
+    try {
+        const id = parseId(req.params.id);
+        const result = await ticketModel.getTicketAndAnswer(id);
+        
+        if (!result.ticket) throw new NotFoundError("Ticket not found");
+
+        res.json({
+            ticket: result.ticket,
+            ticketAnswer: result.answer || null
+        });
+    } catch (error) { next(error); }
+};
+
 module.exports = { createTicket, getUserTickets, getUnansweredTickets, setAnswer, getTicketAnswer };
