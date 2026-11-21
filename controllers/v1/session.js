@@ -47,20 +47,28 @@ const getSession = async (req, res, next) => {
     } catch (error) { next(error); }
 };
 
-const createSession = async (req, res) => {
+const createSession = async (req, res, next) => {
+    let filePath = null;
+    try {
         const data = Session.parseOnly(req.body, ["title", "free", "duration"]);
 
         if (!req.file) {
-           throw new ValidationError("Session video is required.");
+            throw new ValidationError("Session video is required.");
         }
 
-        console.log(req.file);
-        
         data.video = req.file.filename;
+        filePath = req.file.path;
         data.course = parseId(req.params.id);
 
         const newSession = await sessionModel.create(data);
         res.status(201).json(newSession);
+    } catch (error) {
+        // ROLLBACK: if validation or DB fails, delete the uploaded file
+        if (filePath && fs.existsSync(filePath)) {
+            fs.unlinkSync(filePath);
+        }
+        next(error);
+    }
 };
 
 const updateSession = async (req, res) => {
