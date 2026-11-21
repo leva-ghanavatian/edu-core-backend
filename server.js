@@ -25,7 +25,7 @@ const { initModels } = require("./models/index");
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json())
-app.use(cookieParser())
+app.use(cookieParser("testHash"))
 app.use(camelcase);
 app.use(session({
   secret: 'keyboard cat',
@@ -37,7 +37,8 @@ app.use(session({
       path: match ? '/' + match[1] : '/',
       httpOnly: true,
       secure: req.secure || false,
-      maxAge: 60000
+      maxAge: 60000,
+      signed: true
     }
   }
 }))
