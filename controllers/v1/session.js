@@ -77,7 +77,7 @@ const deleteSession = async (req, res) => {
         if (deletedSession && deletedSession.video) {
                 // __dirname is .../controllers/v1
                 // ../../ goes up to the root folder, then into public/courses/covers
-                await safeUnlink(path.join(VIDEOS_DIR, deletedSession.video));
+                await unlink(path.join(VIDEOS_DIR, deletedSession.video));
 
         }
         res.json(found(deletedSession, "Session"));
