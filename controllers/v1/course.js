@@ -105,7 +105,7 @@ const createCourse = async (req, res, next) => {
                 const newCourse = await courseModel.create(data);
                 res.status(201).json(newCourse);
         } catch (error) {
-                fs.unlinkSync(filePath);
+                if (filePath && fs.existsSync(filePath)) fs.unlinkSync(filePath);
                 next(error);
         }
 };
