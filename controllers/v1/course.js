@@ -78,20 +78,37 @@ const getRelatedCourses = async (req, res) => {
         res.status(200).json(relatedCourses);
 }
 
-const createCourse = async (req, res) => {
-        const data = Course.parseCreate(req.body);
+// const createCourse = async (req, res) => {
+//         const data = Course.parseCreate(req.body);
 
-        if (!req.file) {
-                throw new ValidationError("Course cover image is required.");
+//         if (!req.file) {
+//                 throw new ValidationError("Course cover image is required.");
+//         }
+
+//         data.cover = req.file.filename;
+//         data.creator = parseId(req.user.sub);
+
+//         const newCourse = await courseModel.create(data);
+//         res.status(201).json(newCourse);
+// };
+
+const createCourse = async (req, res, next) => {
+        let filePath = null;
+        try {
+                const data = Course.parseCreate(req.body);
+                if (!req.file) throw new ValidationError("Course cover image is required.");
+
+                data.cover = req.file.filename;
+                filePath = req.file.path;
+                data.creator = parseId(req.user.sub);
+
+                const newCourse = await courseModel.create(data);
+                res.status(201).json(newCourse);
+        } catch (error) {
+                fs.unlinkSync(filePath);
+                next(error);
         }
-
-        data.cover = req.file.filename;
-        data.creator = parseId(req.user.sub);
-
-        const newCourse = await courseModel.create(data);
-        res.status(201).json(newCourse);
 };
-
 const updateCourse = async (req, res) => {
         const id = parseId(req.params.id);
         // The user shouldn't be able to change the creator of a course
