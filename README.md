@@ -146,6 +146,7 @@ dbName=educore
 
 # Authentication
 JWT_SECRET=replace_with_a_long_random_string
+JWT_REFRESH_SECRET=replace_with_a_long_random_string
 
 # Email (Gmail SMTP, used for contact replies)
 SMTP_USER=your_email@example.com
