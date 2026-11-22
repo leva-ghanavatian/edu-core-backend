@@ -47,8 +47,30 @@ const getMe = async (req, res) => {
     res.json(found(user, "User"));
 };
 
+const refreshToken = async (req, res) => {
+    const token = req.cookies?.refreshToken;
+    if (!token) throw new UnauthorizedError("Missing refresh token");
+
+    let payload;
+    try {
+        payload = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
+    } catch {
+        throw new ForbiddenError("Invalid or expired refresh token");
+    }
+    //Re-fetching the user means the new access token gets the current role,
+    //and deleted or banned users can't refresh.
+    const user = await userModel.findById(parseId(payload.sub));
+    if (!user) throw new UnauthorizedError("User no longer exists");
+
+    // rotate: issue a new refresh token too
+    res.cookie("refreshToken", signRefreshToken(user), REFRESH_COOKIE_OPTIONS);
+    res.json({ accessToken: signToken(user) });
+
+};
+
 module.exports = {
     registerUser,
     loginUser,
-    getMe
+    getMe,
+    refreshToken
 }
