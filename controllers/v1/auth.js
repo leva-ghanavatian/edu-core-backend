@@ -12,7 +12,7 @@ const REFRESH_COOKIE_OPTIONS = {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
-    path: "/v1/auth/refresh", // adjust to your real mount path
+    path: "/v1/auth/refresh",
     maxAge: 30 * 24 * 60 * 60 * 1000
 };
 
