@@ -26,6 +26,7 @@ const registerUser = async (req, res) => {
     }
     const newUser = await userModel.create(data);
     const token = signToken(newUser);
+    res.cookie("refreshToken", signRefreshToken(newUser), REFRESH_COOKIE_OPTIONS);
     res.status(201).json({ user: newUser, token });
 };
 
@@ -33,6 +34,7 @@ const loginUser = async (req, res) => {
     const { email, phone, password } = User.parseLogin(req.body);
     const user = await userModel.authenticate({ email, phone }, password);
     if (!user) throw new UnauthorizedError("Invalid email/phone or password");
+    res.cookie("refreshToken", signRefreshToken(user), REFRESH_COOKIE_OPTIONS);
     res.json({
         token: signToken(user),
         user
