@@ -3,13 +3,16 @@ const { UnauthorizedError, ForbiddenError } = require("../helpers/errors");
 const { ROLES } = require("../models/User");
 
 const requireAuth = (req, res, next) => {
-    const authHeader = req.headers.authorization;
+    // const authHeader = req.headers.authorization;
 
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-        return next(new UnauthorizedError());
-    }
+    // if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    //     return next(new UnauthorizedError());
+    // }
 
-    const token = authHeader.split(" ")[1];
+    // const token = authHeader.split(" ")[1];
+
+    const token = req.cookies?.token;
+    if (!token) return next(new UnauthorizedError());
 
     try {
         const user = jwt.verify(token, process.env.JWT_SECRET);
