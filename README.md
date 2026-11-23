@@ -151,6 +151,7 @@ JWT_REFRESH_SECRET=replace_with_a_long_random_string
 # Email (Gmail SMTP, used for contact replies)
 SMTP_USER=your_email@example.com
 SMTP_PASS=your_app_password
+SMS_API_KEY=your_sms_apiKey
 ```
 
 | Variable     | Required | Description                                                          |

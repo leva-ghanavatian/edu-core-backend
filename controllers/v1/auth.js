@@ -89,7 +89,7 @@ module.exports.sendOtp = async (req, res) => {
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
-          'Api-Key': 'HaHLS0y1KRLFslecG64G84p2KolmHCBoFXVEyU1ziSKvgQTB2Z'
+          'Api-Key': process.env.SMS_API_KEY
         }
       }
     );
