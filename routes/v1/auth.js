@@ -10,4 +10,6 @@ router.post("/login", requireJsonBody, auth.loginUser);
 router.post("/refresh", auth.refreshToken);
 router.get("/me", requireAuth, auth.getMe);
 
+router.post("/send-otp", requireJsonBody, auth.sendOtp);
+
 module.exports = router;
