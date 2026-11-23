@@ -94,6 +94,8 @@ module.exports.sendOtp = async (req, res) => {
       }
     );
 
+    console.log("Success:", response.data);
+    return res.status(200).json({ success: true, data: response.data });
 
   } catch (error) {
     console.error("Error sending OTP:", error.response?.data || error.message);
