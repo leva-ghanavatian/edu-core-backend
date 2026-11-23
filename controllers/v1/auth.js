@@ -77,19 +77,19 @@ module.exports.sendOtp = async (req, res) => {
     const response = await axios.post(
       'https://api.iranpayamak.com/ws/v1/sms/pattern',
       {
-        code: "jqcrkffb9sevvss", 
+        code: "SQNo8JmFL3", 
         recipient: phone,        
         line_number: "3000505",  
         number_format: "english",
         attributes: {            
-          "verification-code": code 
+          "code": code 
         }
       },
       {
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
-          'Api-Key': 'YOUR_API_KEY_HERE'
+          'Api-Key': 'HaHLS0y1KRLFslecG64G84p2KolmHCBoFXVEyU1ziSKvgQTB2Z'
         }
       }
     );
