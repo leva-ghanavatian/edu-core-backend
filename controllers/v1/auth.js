@@ -6,7 +6,8 @@ const jwt = require("jsonwebtoken");
 const { signToken, signRefreshToken } = require("../../helpers/auth");
 const { UnauthorizedError, ForbiddenError } = require("../../helpers/errors");
 const found = require("../../helpers/found");
-const REFRESH_SECRET = "testRefresh1234";
+const axios = require('axios');
+
 
 const REFRESH_COOKIE_OPTIONS = {
     httpOnly: true,
@@ -67,9 +68,7 @@ const refreshToken = async (req, res) => {
 
 };
 
-const axios = require('axios');
-
-module.exports.sendOtp = async (req, res) => {
+const sendOtp = async (req, res) => {
   try {
     const { phone } = req.body;
     const code = Math.floor(Math.random() * 99999);
@@ -107,5 +106,6 @@ module.exports = {
     registerUser,
     loginUser,
     getMe,
-    refreshToken
+    refreshToken,
+    sendOtp
 }
