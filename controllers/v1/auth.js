@@ -67,6 +67,21 @@ const refreshToken = async (req, res) => {
 
 };
 
+const axios = require('axios');
+
+module.exports.sendOtp = async (req, res) => {
+  try {
+    const { phone } = req.body;
+    const code = Math.floor(Math.random() * 99999);
+
+
+
+  } catch (error) {
+    console.error("Error sending OTP:", error.response?.data || error.message);
+    return res.status(500).json({ success: false, message: "Failed to send OTP" });
+  }
+};
+
 module.exports = {
     registerUser,
     loginUser,
