@@ -10,6 +10,7 @@ const notificationModel = require("./Notification");
 const departmentModel = require("./Department");
 const subDepartmentModel = require("./SubDepartment");
 const menuModel = require("./Menu");
+const otpModel = require("./Menu");
 
 const initModels = () => Promise.all([
     userModel.init(),
@@ -23,7 +24,8 @@ const initModels = () => Promise.all([
     notificationModel.init(),
     departmentModel.init(),
     subDepartmentModel.init(),
-    menuModel.init()
+    menuModel.init(),
+    otpModel.init()
 ]);
 
 module.exports = { initModels };
